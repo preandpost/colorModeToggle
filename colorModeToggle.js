@@ -19,7 +19,6 @@ function colorModeToggle() {
   const htmlElement = document.documentElement;
   const computed = getComputedStyle(htmlElement);
   let toggleEl;
-  let modeTextEl; // Added reference to mode text element
   let togglePressed = "false";
 
   const scriptTag = document.querySelector("[tr-color-vars]");
@@ -85,27 +84,11 @@ function colorModeToggle() {
         element.setAttribute("aria-pressed", togglePressed);
       });
     }
-    updateModeText(); // Update text after mode change
-    updateButtonColors(); // Update button colors after mode change
-  }
-
-  function updateModeText() {
-    const darkClass = htmlElement.classList.contains("dark-mode");
-    modeTextEl.textContent = darkClass ? "Light mode" : "Dark mode"; // Update text content based on mode
-  }
-
-  function updateButtonColors() {
-    const darkClass = htmlElement.classList.contains("dark-mode");
-    toggleEl.forEach(function (element) {
-      element.style.backgroundColor = darkClass ? darkColors['--color--background'] : lightColors['--color--background'];
-      element.style.color = darkClass ? darkColors['--color--text'] : lightColors['--color--text'];
-    });
   }
 
   function checkPreference(e) {
     goDark(e.matches, false);
   }
-
   const colorPreference = window.matchMedia("(prefers-color-scheme: dark)");
   colorPreference.addEventListener("change", (e) => {
     checkPreference(e);
@@ -120,14 +103,11 @@ function colorModeToggle() {
 
   window.addEventListener("DOMContentLoaded", (event) => {
     toggleEl = document.querySelectorAll("[tr-color-toggle]");
-    modeTextEl = document.getElementById("modeText"); // Get reference to the mode text element
     toggleEl.forEach(function (element) {
       element.setAttribute("aria-label", "View Dark Mode");
       element.setAttribute("role", "button");
       element.setAttribute("aria-pressed", togglePressed);
     });
-    updateModeText(); // Set initial text
-    updateButtonColors(); // Set initial button colors
     toggleEl.forEach(function (element) {
       element.addEventListener("click", function () {
         let darkClass = htmlElement.classList.contains("dark-mode");
@@ -136,5 +116,4 @@ function colorModeToggle() {
     });
   });
 }
-
 colorModeToggle();
