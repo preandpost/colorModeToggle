@@ -7,7 +7,13 @@
 
 function colorModeToggle() {
   function attr(defaultVal, attrVal) {
-    // ... (existing code)
+    const defaultValType = typeof defaultVal;
+    if (typeof attrVal !== "string" || attrVal.trim() === "") return defaultVal;
+    if (attrVal === "true" && defaultValType === "boolean") return true;
+    if (attrVal === "false" && defaultValType === "boolean") return false;
+    if (isNaN(attrVal) && defaultValType === "string") return attrVal;
+    if (!isNaN(attrVal) && defaultValType === "number") return +attrVal;
+    return defaultVal;
   }
 
   const htmlElement = document.documentElement;
@@ -72,6 +78,7 @@ function colorModeToggle() {
     }
 
     updateModeText(); // Update text after mode change
+    updateButtonColors(); // Update button colors after mode change
   }
 
   function updateModeText() {
@@ -83,6 +90,14 @@ function colorModeToggle() {
 
     const darkClass = htmlElement.classList.contains("dark-mode");
     modeText.textContent = darkClass ? "Light mode" : "Dark mode";
+  }
+
+  function updateButtonColors() {
+    const darkClass = htmlElement.classList.contains("dark-mode");
+    toggleEl.forEach(function (element) {
+      element.style.backgroundColor = darkClass ? darkColors['--color--background'] : lightColors['--color--background'];
+      element.style.color = darkClass ? darkColors['--color--text'] : lightColors['--color--text'];
+    });
   }
 
   function checkPreference(e) {
@@ -103,6 +118,7 @@ function colorModeToggle() {
 
   window.addEventListener("DOMContentLoaded", (event) => {
     updateModeText(); // Set initial text
+    updateButtonColors(); // Set initial button colors
     toggleEl = document.querySelectorAll("[tr-color-toggle]");
     toggleEl.forEach(function (element) {
       element.addEventListener("click", function () {
